@@ -1,0 +1,98 @@
+# ==========================================
+# HIPAA Compliance & Patient Data Protection
+# ==========================================
+# Radiographs and medical images (PHI)
+*.png
+*.jpg
+*.jpeg
+*.dcm
+*.dicom
+*.tif
+*.tiff
+*.bmp
+*.raw
+
+# Image directories & datasets
+Image Folder/
+Image Folder*/
+Sorted X-rays/
+X-rays by View/
+Validated_Zips/
+cleaned/
+quality_checked/
+prepared_images/
+review_folders/
+cxr_frontal_qc/
+cxr_pipeline_output/
+rad_dino_output/rad_dino_embeddings/
+
+# Archives and compressed bundles
+*.zip
+*.tar
+*.gz
+*.tgz
+*.rar
+archives/
+
+# Patient-level raw clinical records & manifests containing PHI
+Clinical_data_with_SDI.csv
+Clinical_data*.csv
+!Clinical_data_with_SDI - Sheet1.csv
+image_qc_manifest.csv
+clean_cohort_aligned.csv
+
+# Large model weights, embeddings, and tensors
+*.npy
+*.npz
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# ==========================================
+# Python & Environment
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+.venv/
+.venv*/
+venv/
+env/
+cxr-env/
+.python-cxr/
+
+# Logs & Debugging
+logs/
+*.log
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
