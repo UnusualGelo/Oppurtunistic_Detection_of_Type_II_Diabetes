@@ -1,0 +1,3 @@
+Dataset,N,AUROC,AUPRC,Accuracy,Sensitivity,Specificity,F1-Score
+Model 1: All CXRs,949,0.6401,0.4475,60.38%,62.21%,59.50%,0.504
+Model 2: Hazy-11 Excluded,938,0.6182,0.4262,59.17%,54.72%,61.33%,0.4673

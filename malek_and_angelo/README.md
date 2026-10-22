@@ -206,3 +206,10 @@ head -n 20 prepared_images/prepared_index.csv
 - Raw DICOM/PNG files and un-anonymized clinical spreadsheets must remain in local secure storage.
 - Never add or commit `.png`, `.jpg`, `.zip`, `.npy`, or patient-level ZIP files to git.
 - All code, manifests, and aggregated summaries in this folder adhere to HIPAA and institutional IRB review standards.
+
+---
+
+## Section 7: Next Phase — From-Scratch CNN & Filter Exploration
+For full architectural blueprints, filter configuration matrices, receptive field formulas, and Grad-CAM interpretability protocols, see:
+- 📄 **[`CNN_MODEL_DESIGN_SPEC.md`](CNN_MODEL_DESIGN_SPEC.md)**: Detailed design document for custom Convolutional Neural Networks and filter exploration.
+
