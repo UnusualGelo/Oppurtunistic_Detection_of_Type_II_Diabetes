@@ -1,0 +1,6 @@
+Model Pipeline,Input Features,AUROC,AUPRC,Accuracy,Recall (Sens.),Specificity,Precision,F1-Score
+1. Pure X-Ray Vision (CXR Alone),Grayscale Radiograph (Pixels),0.6401,0.4473,60.38%,62.21%,59.50%,42.35%,0.5040
+2. Clinical Alone (Linear / LR),"Age, Sex, BMI, SDI",0.6931,0.5275,63.01%,60.26%,64.33%,44.69%,0.5132
+3. Multimodal Fusion (Linear / LR),X-Ray Score + Clinical & SDI,0.7128,0.5516,66.28%,66.78%,66.04%,48.46%,0.5616
+4. Multimodal Fusion (Gradient Boosting),X-Ray Score + Clinical & SDI,0.9068,0.8196,83.25%,69.38%,89.88%,76.62%,0.7282
+5. Multimodal Ensemble (Calibrated Blend),X-Ray Score + Clinical & SDI,0.8720,0.7702,79.87%,69.38%,84.89%,68.71%,0.6904

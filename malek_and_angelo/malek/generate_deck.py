@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Generate Malek's CS396 Presentation Slide Deck with complete metrics,
-heart-vs-lung (CTR) anatomical scoring, and architecture breakdown.
+heart-vs-lung (CTR) anatomical scoring, architecture breakdown,
+and a dedicated decision walkthrough slide explaining how the model
+classifies T2D vs Non-T2D.
 """
 
 from pptx import Presentation
@@ -20,6 +22,7 @@ def create_deck(output_path):
     ACCENT_BLUE = RGBColor(56, 189, 248)  # #38bdf8
     ACCENT_GREEN = RGBColor(52, 211, 153) # #34d399
     ACCENT_ORANGE = RGBColor(251, 146, 60)# #fb923c
+    ACCENT_RED = RGBColor(248, 113, 113)  # #f87171
     WHITE     = RGBColor(255, 255, 255)
     MUTED     = RGBColor(148, 163, 184)   # #94a3b8
     BORDER    = RGBColor(51, 65, 85)
@@ -169,14 +172,110 @@ def create_deck(output_path):
         run2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 3: How the Model Was Built (Architecture)
+    # SLIDE 3: Decision Walkthrough - How the Model Classifies T2D vs Non-T2D
     # =========================================================================
     s3 = prs.slides.add_slide(blank_layout)
     set_slide_background(s3)
-    add_header(s3, "Model Engineering: CustomScratchCXRNet (~75k Params)")
+    add_header(s3, "Decision Walkthrough: How Model Classifies T2D vs. Non-T2D")
+
+    # Left Box: Non-Diabetic Profile (Score < 0.50)
+    box_nont2d = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(3.7))
+    box_nont2d.fill.solid()
+    box_nont2d.fill.fore_color.rgb = CARD_BG
+    box_nont2d.line.color.rgb = RGBColor(16, 185, 129) # green border
+    box_nont2d.line.width = Pt(2)
+    tf_non = box_nont2d.text_frame
+    tf_non.word_wrap = True
+    p = tf_non.paragraphs[0]
+    p.text = "NON-DIABETIC PROFILE (Predicted Score < 0.50)"
+    p.font.size = Pt(14)
+    p.font.bold = True
+    p.font.color.rgb = ACCENT_GREEN
+    p.space_after = Pt(8)
+
+    non_traits = [
+        ("Narrow Heart Silhouette: ", "Heart width is < 50% of inner thoracic cage diameter (Normal CTR)."),
+        ("Crisp Anatomical Boundaries: ", "Sharp cardiac apex and clear sharp cardiophrenic costal angles."),
+        ("No Mediastinal Expansion: ", "Slender superior mediastinum without dense ectopic visceral fat pads."),
+        ("Thin Lateral Soft Tissue: ", "Minimal subcutaneous thoracic fat fold outside the rib cage."),
+        ("Model Output: ", "Feature filters output negative or small activations -> P(T2D) < 0.50 -> CLASS 0 (NO T2D).")
+    ]
+    for b_title, b_desc in non_traits:
+        p = tf_non.add_paragraph()
+        p.space_after = Pt(4)
+        run1 = p.add_run()
+        run1.text = "✓ " + b_title
+        run1.font.bold = True
+        run1.font.size = Pt(11)
+        run1.font.color.rgb = ACCENT_GREEN
+        run2 = p.add_run()
+        run2.text = b_desc
+        run2.font.size = Pt(10.5)
+        run2.font.color.rgb = WHITE
+
+    # Right Box: Diabetic Profile (Score >= 0.50)
+    box_t2d = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(3.7))
+    box_t2d.fill.solid()
+    box_t2d.fill.fore_color.rgb = CARD_BG
+    box_t2d.line.color.rgb = ACCENT_ORANGE
+    box_t2d.line.width = Pt(2)
+    tf_t2d = box_t2d.text_frame
+    tf_t2d.word_wrap = True
+    p = tf_t2d.paragraphs[0]
+    p.text = "DIABETIC RISK PROFILE (Predicted Score >= 0.50)"
+    p.font.size = Pt(14)
+    p.font.bold = True
+    p.font.color.rgb = ACCENT_ORANGE
+    p.space_after = Pt(8)
+
+    t2d_traits = [
+        ("Widened Cardiac Silhouette: ", "Heart width >= 50% of inner chest (Cardiomegaly from cardiomyopathy/hypertension)."),
+        ("Blunted Diaphragm Angles: ", "Pericardial and retrosternal adipose pads fill the cardiophrenic angles."),
+        ("Widened Mediastinal Shadow: ", "Ectopic vascular pedicle fat broadening central thoracic shadow."),
+        ("Thick Lateral Adiposity: ", "Noticeable soft tissue shadows flanking ribs (high BMI phenotype)."),
+        ("Model Output: ", "Deep channels fire strongly -> Logit_T2D dominates -> P(T2D) >= 0.50 -> CLASS 1 (FLAGGED T2D).")
+    ]
+    for b_title, b_desc in t2d_traits:
+        p = tf_t2d.add_paragraph()
+        p.space_after = Pt(4)
+        run1 = p.add_run()
+        run1.text = "⚠ " + b_title
+        run1.font.bold = True
+        run1.font.size = Pt(11)
+        run1.font.color.rgb = ACCENT_ORANGE
+        run2 = p.add_run()
+        run2.text = b_desc
+        run2.font.size = Pt(10.5)
+        run2.font.color.rgb = WHITE
+
+    # Bottom Banner: The Mathematical Decision Pipeline
+    card_math = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.45), Inches(11.7), Inches(1.5))
+    card_math.fill.solid()
+    card_math.fill.fore_color.rgb = CARD_BG
+    card_math.line.color.rgb = BORDER
+    mtf = card_math.text_frame
+    mtf.word_wrap = True
+    mp1 = mtf.paragraphs[0]
+    mp1.text = "THE MATHEMATICAL SCORING PIPELINE (FROM PIXELS TO DECISION)"
+    mp1.font.size = Pt(11.5)
+    mp1.font.bold = True
+    mp1.font.color.rgb = ACCENT_BLUE
+    mp1.space_after = Pt(3)
+
+    mp2 = mtf.add_paragraph()
+    mp2.text = "1. (112x112 CXR) -> 4 Conv Blocks compress image into 128 anatomical feature maps.\n2. Global Average Pooling condenses maps into 128 numbers (reflecting CTR & fat pad magnitude).\n3. Dense Head: Logit = W * features + b  ->  Softmax converts to calibrated probability P(T2D) between 0.0% and 100%.\n4. Clinical Threshold Rule: If P(T2D) >= 0.50, patient is flagged as 'Diabetic Risk (1)' -> Triggers HbA1c lab order."
+    mp2.font.size = Pt(10.5)
+    mp2.font.color.rgb = WHITE
+
+    # =========================================================================
+    # SLIDE 4: How the Model Was Built (Architecture)
+    # =========================================================================
+    s4 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s4)
+    add_header(s4, "Model Engineering: CustomScratchCXRNet (~75k Params)")
 
     # Left: Block diagram / Pipeline
-    c_arch = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(6.2), Inches(5.2))
+    c_arch = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(6.2), Inches(5.2))
     c_arch.fill.solid()
     c_arch.fill.fore_color.rgb = CARD_BG
     c_arch.line.color.rgb = BORDER
@@ -213,7 +312,7 @@ def create_deck(output_path):
         run2.font.color.rgb = WHITE
 
     # Right: Why this architecture succeeded
-    c_why = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.3), Inches(1.6), Inches(5.2), Inches(5.2))
+    c_why = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.3), Inches(1.6), Inches(5.2), Inches(5.2))
     c_why.fill.solid()
     c_why.fill.fore_color.rgb = CARD_BG
     c_why.line.color.rgb = BORDER
@@ -246,13 +345,12 @@ def create_deck(output_path):
         run2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 4: Primary Benchmark Results (Accuracy, Recall, Precision, AUROC)
+    # SLIDE 5: Primary Benchmark Results (Accuracy, Recall, Precision, AUROC)
     # =========================================================================
-    s4 = prs.slides.add_slide(blank_layout)
-    set_slide_background(s4)
-    add_header(s4, "Model Performance: Accuracy, Recall, Precision & AUROC")
+    s5 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s5)
+    add_header(s5, "Model Performance: Accuracy, Recall, Precision & AUROC")
 
-    # Metric Cards Top Row: 4 key cards
     cards_data = [
         ("AUROC", "0.6401", "Model 1 (All CXRs)\nModel 2: 0.6182", ACCENT_BLUE),
         ("ACCURACY", "60.38%", "573 / 949 Correct\nModel 2: 59.17%", ACCENT_GREEN),
@@ -261,7 +359,7 @@ def create_deck(output_path):
     ]
     for i, (m_lbl, m_val, m_sub, m_col) in enumerate(cards_data):
         x = Inches(0.8 + i * 2.98)
-        card = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(1.5), Inches(2.78), Inches(1.8))
+        card = s5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(1.5), Inches(2.78), Inches(1.8))
         card.fill.solid()
         card.fill.fore_color.rgb = CARD_BG
         card.line.color.rgb = BORDER
@@ -285,9 +383,8 @@ def create_deck(output_path):
         p3.font.size = Pt(10)
         p3.font.color.rgb = MUTED
 
-    # Side-by-side Comparison Table
     rows, cols = 8, 5
-    table_shape = s4.shapes.add_table(rows, cols, Inches(0.8), Inches(3.55), Inches(11.7), Inches(3.4))
+    table_shape = s5.shapes.add_table(rows, cols, Inches(0.8), Inches(3.55), Inches(11.7), Inches(3.4))
     table = table_shape.table
     table.columns[0].width = Inches(3.2)
     table.columns[1].width = Inches(2.2)
@@ -328,19 +425,18 @@ def create_deck(output_path):
                 p.font.bold = True
                 p.font.color.rgb = ACCENT_GREEN
             elif j == 3 and "-" in val:
-                p.font.color.rgb = RGBColor(248, 113, 113) # red/drop
+                p.font.color.rgb = ACCENT_RED
             else:
                 p.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 5: Confusion Matrix & Clinical Screener Trade-Offs
+    # SLIDE 6: Confusion Matrix & Clinical Screener Trade-Offs
     # =========================================================================
-    s5 = prs.slides.add_slide(blank_layout)
-    set_slide_background(s5)
-    add_header(s5, "Confusion Matrix & Clinical Screening Utility")
+    s6 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s6)
+    add_header(s6, "Confusion Matrix & Clinical Screening Utility")
 
-    # Box 1: Confusion Matrix breakdown
-    cm1 = s5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(5.2))
+    cm1 = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(5.2))
     cm1.fill.solid()
     cm1.fill.fore_color.rgb = CARD_BG
     cm1.line.color.rgb = BORDER
@@ -373,8 +469,7 @@ def create_deck(output_path):
         run2.font.size = Pt(11)
         run2.font.color.rgb = WHITE
 
-    # Box 2: Impact of 11 Hazy Radiographs
-    cm2 = s5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(5.2))
+    cm2 = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(5.2))
     cm2.fill.solid()
     cm2.fill.fore_color.rgb = CARD_BG
     cm2.line.color.rgb = BORDER
@@ -407,36 +502,38 @@ def create_deck(output_path):
         run2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 6: Comparison: Image CNN vs Pretrained RAD-DINO vs Metadata
+    # SLIDE 7: Comparison: Image CNN vs Pretrained RAD-DINO vs Metadata vs Multimodal
     # =========================================================================
-    s6 = prs.slides.add_slide(blank_layout)
-    set_slide_background(s6)
-    add_header(s6, "Comprehensive Comparison: Vision vs. Pretrained vs. Clinical Metadata")
+    s7 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s7)
+    add_header(s7, "Multimodal Fusion Results: From Pure CXR to 0.9068 AUROC")
 
-    rows, cols = 5, 5
-    t2 = s6.shapes.add_table(rows, cols, Inches(0.8), Inches(1.6), Inches(11.7), Inches(3.2)).table
-    t2.columns[0].width = Inches(3.2)
-    t2.columns[1].width = Inches(2.0)
-    t2.columns[2].width = Inches(2.0)
-    t2.columns[3].width = Inches(2.2)
-    t2.columns[4].width = Inches(2.3)
+    rows, cols = 6, 6
+    t2 = s7.shapes.add_table(rows, cols, Inches(0.8), Inches(1.5), Inches(11.7), Inches(3.2)).table
+    t2.columns[0].width = Inches(2.9)
+    t2.columns[1].width = Inches(2.1)
+    t2.columns[2].width = Inches(1.3)
+    t2.columns[3].width = Inches(1.4)
+    t2.columns[4].width = Inches(1.8)
+    t2.columns[5].width = Inches(2.2)
 
-    h2 = ["Model / Modality", "Input Data", "AUROC", "Accuracy", "Key Observation"]
+    h2 = ["Pipeline / Model", "Input Modalities", "AUROC", "Accuracy", "TP / TN / FP / FN", "Key Clinical Impact"]
     for j, h in enumerate(h2):
         cell = t2.cell(0, j)
         cell.fill.solid()
         cell.fill.fore_color.rgb = RGBColor(40, 53, 76)
         p = cell.text_frame.paragraphs[0]
         p.text = h
-        p.font.size = Pt(11.5)
+        p.font.size = Pt(11)
         p.font.bold = True
         p.font.color.rgb = ACCENT_BLUE
 
     comp_data = [
-        ("Malek Custom CNN (Scratch)", "Raw CXR Pixels", "0.6401", "60.38%", "Learns task-specific CTR & fat markers"),
-        ("Frozen RAD-DINO (Foundation)", "ViT-B Patches (768-d)", "0.5734", "56.40%", "Overlooks global thoracic ratios"),
-        ("Clinical Metadata (Incl. SDI)", "Demographics + SDI", "0.6955", "64.10%", "Captures age, gender & socioeconomic risk"),
-        ("Combined Multimodal (Vision+Meta)", "CXR + Demographics", "~0.72 - 0.74", "~68 - 70%", "Optimal opportunistic detection synergy")
+        ("1. Pure CXR Vision (Scratch)", "CXR Grayscale Pixels", "0.6401", "60.38%", "191 / 382 / 260 / 116", "Cardiomegaly & fat signal alone"),
+        ("2. Frozen RAD-DINO (ViT)", "ViT-B Patches (768-d)", "0.5734", "56.40%", "170 / 365 / 277 / 137", "General embeddings miss CTR geometry"),
+        ("3. Clinical Alone (Linear LR)", "Age, Sex, BMI, SDI", "0.6931", "63.01%", "185 / 413 / 229 / 122", "Demographic & socioeconomic risk baseline"),
+        ("4. Multimodal Fusion (Linear)", "CXR Score + Clinical", "0.7128", "66.28%", "205 / 424 / 218 / 102", "+1.97% AUC lift over clinical alone"),
+        ("5. Multimodal (Gradient Boosting)", "CXR Score + Clinical", "0.9068", "83.25%", "213 / 577 / 65 / 94", "★ Peak AUROC; 75% drop in false positives!")
     ]
     for i, row in enumerate(comp_data, start=1):
         for j, val in enumerate(row):
@@ -445,40 +542,63 @@ def create_deck(output_path):
             cell.fill.fore_color.rgb = CARD_BG if i % 2 == 1 else RGBColor(24, 33, 47)
             p = cell.text_frame.paragraphs[0]
             p.text = val
-            p.font.size = Pt(11)
-            p.font.color.rgb = ACCENT_GREEN if j == 2 and "0.6401" in val else WHITE
-            if j == 0:
+            p.font.size = Pt(10)
+            if j == 2 and "0.9068" in val:
                 p.font.bold = True
+                p.font.color.rgb = ACCENT_GREEN
+            elif j == 0 and "5." in val:
+                p.font.bold = True
+                p.font.color.rgb = ACCENT_GREEN
+            elif j == 4 and "65" in val:
+                p.font.bold = True
+                p.font.color.rgb = ACCENT_ORANGE
+            else:
+                p.font.color.rgb = WHITE
 
-    sum_card = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.1), Inches(11.7), Inches(1.8))
+    sum_card = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(4.9), Inches(11.7), Inches(2.2))
     sum_card.fill.solid()
     sum_card.fill.fore_color.rgb = CARD_BG
     sum_card.line.color.rgb = BORDER
     stf = sum_card.text_frame
     stf.word_wrap = True
     sp1 = stf.paragraphs[0]
-    sp1.text = "THE MULTIMODAL OPPORTUNITY"
+    sp1.text = "MULTIMODAL LATE FUSION BREAKTHROUGH & FEATURE IMPORTANCE"
     sp1.font.size = Pt(12)
     sp1.font.bold = True
     sp1.font.color.rgb = ACCENT_BLUE
     sp1.space_after = Pt(4)
-    sp2 = stf.add_paragraph()
-    sp2.text = "Raw chest X-rays provide independent morphological signal (cardiomegaly, thoracic fat) that is orthogonal to demographic metadata (age, SDI score). Combining our from-scratch CNN image features with clinical EHR variables establishes a complete non-invasive opportunistic screening pipeline."
-    sp2.font.size = Pt(11.5)
-    sp2.font.color.rgb = WHITE
+    
+    insights = [
+        ("X-Ray as Continuous Biomarker: ", "Stage 1 converts raw CXR into an independent numerical risk probability (predicted_prob). Stage 2 fuses this scalar with Age, Sex, BMI, and SDI."),
+        ("AUC Surge (+0.2667 Jump): ", "Gradient Boosting fuses non-linear interactions, leaping from 0.6401 (CXR alone) and 0.6931 (Clinical alone) to a remarkable 0.9068 AUROC (AUPRC: 0.8196)."),
+        ("False Alarm Elimination: ", "False positives plummet by 75% (from 260 in CXR alone down to 65), elevating Specificity to 89.88% and Precision to 76.62%."),
+        ("Feature Importance: ", "Age (51.6%), BMI (30.5%), CXR Numerical Score (9.2%), Sex (3.1%), SDI (1.9%). Chest X-ray contributes an orthogonal, statistically independent anatomical biomarker.")
+    ]
+    for i_title, i_desc in insights:
+        p = stf.add_paragraph()
+        p.space_after = Pt(3)
+        r1 = p.add_run()
+        r1.text = "• " + i_title
+        r1.font.bold = True
+        r1.font.size = Pt(10.5)
+        r1.font.color.rgb = ACCENT_GREEN if "AUC" in i_title else ACCENT_ORANGE
+        r2 = p.add_run()
+        r2.text = i_desc
+        r2.font.size = Pt(10.5)
+        r2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 7: How to Use Malek's Screeners (Deliverables)
+    # SLIDE 8: How to Use Malek's Screeners (Deliverables)
     # =========================================================================
-    s7 = prs.slides.add_slide(blank_layout)
-    set_slide_background(s7)
-    add_header(s7, "Deployable Python Screeners & OOF Deliverables")
+    s8 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s8)
+    add_header(s8, "Deployable Python Screeners & OOF Deliverables")
 
-    s7_left = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(5.2))
-    s7_left.fill.solid()
-    s7_left.fill.fore_color.rgb = CARD_BG
-    s7_left.line.color.rgb = BORDER
-    tf = s7_left.text_frame
+    s8_left = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(5.2))
+    s8_left.fill.solid()
+    s8_left.fill.fore_color.rgb = CARD_BG
+    s8_left.line.color.rgb = BORDER
+    tf = s8_left.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.text = "Production Python Screeners"
@@ -488,9 +608,9 @@ def create_deck(output_path):
     p.space_after = Pt(10)
 
     scr_lines = [
-        ("predict_t2d_image.py: ", "Single-image and batch screener. Outputs binary flag (0=No, 1=T2D Risk), predicted probability, and risk tier (LOW, MODERATE, HIGH)."),
-        ("predict_t2d_metadata.py: ", "Demographic and SDI metadata screener supporting full clinical tables with missing value imputation."),
-        ("train_from_scratch_dual.py: ", "Full dual-cohort pipeline with StratifiedGroupKFold, memory caching, and automated OOF CSV export."),
+        ("train_multimodal_fusion.py: ", "Two-stage fusion engine: converts CXRs to continuous risk scalar, then trains Gradient Boosting on clinical features."),
+        ("predict_t2d_image.py: ", "Single-image and batch CXR screener: outputs binary flag, continuous probability, and CTR risk tier."),
+        ("train_from_scratch_dual.py: ", "Full dual-cohort CNN pipeline with StratifiedGroupKFold, memory caching, and automated OOF CSV export."),
         ("classify_view_rad_dino.py: ", "Frontal vs Lateral view separator achieving 99.8% accuracy and 1.0000 AUROC.")
     ]
     for b_title, b_desc in scr_lines:
@@ -499,18 +619,18 @@ def create_deck(output_path):
         run1 = p.add_run()
         run1.text = "► " + b_title
         run1.font.bold = True
-        run1.font.size = Pt(11.5)
+        run1.font.size = Pt(11)
         run1.font.color.rgb = ACCENT_GREEN
         run2 = p.add_run()
         run2.text = b_desc
-        run2.font.size = Pt(11)
+        run2.font.size = Pt(10.5)
         run2.font.color.rgb = WHITE
 
-    s7_right = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(5.2))
-    s7_right.fill.solid()
-    s7_right.fill.fore_color.rgb = CARD_BG
-    s7_right.line.color.rgb = BORDER
-    tf = s7_right.text_frame
+    s8_right = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(5.2))
+    s8_right.fill.solid()
+    s8_right.fill.fore_color.rgb = CARD_BG
+    s8_right.line.color.rgb = BORDER
+    tf = s8_right.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.text = "Clean Deliverables on GitHub"
@@ -520,11 +640,11 @@ def create_deck(output_path):
     p.space_after = Pt(10)
 
     deliv_lines = [
-        ("oof_all_cxrs.csv: ", "949 individual patient out-of-fold predictions with image name, patient ID, actual label, probability, and assigned fold."),
-        ("oof_no_hazy.csv: ", "938 out-of-fold predictions excluding the 11 blurry images for benchmark reproducibility."),
-        ("scratch_models_comparison.csv: ", "Side-by-side AUROC, AUPRC, Accuracy, Recall, and Specificity benchmark table."),
-        ("report.md: ", "Comprehensive written report detailing methodology, hyperparameter choices, and clinical interpretations."),
-        ("HIPAA Compliant: ", "Zero raw patient identifiers or DICOM binaries stored in git.")
+        ("oof_multimodal.csv: ", "949 patient records with CXR risk score, multimodal predicted probability, and binary classification."),
+        ("multimodal_benchmark_comparison.csv: ", "Complete 5-pipeline benchmark table (Pure CXR, Clinical alone, Linear, Gradient Boosting, Ensemble)."),
+        ("train_test_split.csv & test_set.csv: ", "Strict 80/20 train-test splits (Folds 1-4 train N=760, Fold 5 test N=189) with 0 patient leakage."),
+        ("oof_all_cxrs.csv & oof_no_hazy.csv: ", "Raw image CNN out-of-fold predictions across All CXRs (N=949) vs No Hazy (N=938)."),
+        ("HIPAA Compliant: ", "Zero raw patient radiographs or DICOM binaries stored in git.")
     ]
     for b_title, b_desc in deliv_lines:
         p = tf.add_paragraph()
@@ -532,25 +652,25 @@ def create_deck(output_path):
         run1 = p.add_run()
         run1.text = "✓ " + b_title
         run1.font.bold = True
-        run1.font.size = Pt(11.5)
+        run1.font.size = Pt(11)
         run1.font.color.rgb = ACCENT_ORANGE
         run2 = p.add_run()
         run2.text = b_desc
-        run2.font.size = Pt(11)
+        run2.font.size = Pt(10.5)
         run2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 8: Summary & Presentation Speaker Talking Points
+    # SLIDE 9: Summary & Presentation Speaker Talking Points
     # =========================================================================
-    s8 = prs.slides.add_slide(blank_layout)
-    set_slide_background(s8)
-    add_header(s8, "Key Takeaways & Presentation Summary")
+    s9 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s9)
+    add_header(s9, "Key Takeaways & Presentation Summary")
 
-    s8_card = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(11.7), Inches(5.2))
-    s8_card.fill.solid()
-    s8_card.fill.fore_color.rgb = CARD_BG
-    s8_card.line.color.rgb = BORDER
-    tf = s8_card.text_frame
+    s9_card = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(11.7), Inches(5.2))
+    s9_card.fill.solid()
+    s9_card.fill.fore_color.rgb = CARD_BG
+    s9_card.line.color.rgb = BORDER
+    tf = s9_card.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.text = "Summary for CS 396 Presentation (Thursday Oct 22nd)"
