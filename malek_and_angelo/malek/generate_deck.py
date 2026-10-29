@@ -555,11 +555,11 @@ def create_deck(output_path):
                 p.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 7: Validation Loss & AUROC Learning Curves (Pure CXR Vision 80/20 Split)
+    # SLIDE 7: Validation Loss & AUROC Learning Curves (Pure CXR Vision 3-Way Split)
     # =========================================================================
     s7 = prs.slides.add_slide(blank_layout)
     set_slide_background(s7)
-    add_header(s7, "Loss & Learning Curves: 80/20 Train/Test Split (Pure CXR)", milestone="PHASE 2: TRAINING DYNAMICS")
+    add_header(s7, "Loss & Learning Curves: 3-Way Split (Train / Val / Test)", milestone="PHASE 2: TRAINING DYNAMICS")
 
     graph_img = "/home/e92/School/CS396/Oppurtunistic_Detection_of_Type_II_Diabetes/malek_and_angelo/malek/cxr_loss_graph.png"
     if Path(graph_img).exists():
@@ -579,10 +579,10 @@ def create_deck(output_path):
     p.space_after = Pt(10)
 
     loss_points = [
-        ("Clean Train Loss Drop (Dashed): ", "Enhanced model training loss drops dramatically from 0.67 down to 0.22, while Baseline drops from 0.61 to 0.51. The network learns image features rapidly and aggressively."),
-        ("Test Loss Sweet Spot (Solid): ", "Baseline test loss stabilizes at ~0.63, while Enhanced hits its sweet spot around Epoch 4 before starting to memorize the 759 training images."),
-        ("Baseline Reaches 0.6169 AUROC: ", "On the unseen 190-patient holdout test set, the Baseline CNN achieves 0.6169 AUROC and 65.8% accuracy purely from chest X-ray images."),
-        ("Clear Overfitting Checkpoint: ", "Comparing the 0.22 train loss against test loss gives us an exact early-stopping checkpoint, proving how vital regularization is when training deep vision models.")
+        ("Clean Train Loss Drop (Dashed): ", "Enhanced model training loss drops smoothly from 0.69 down to 0.17, proving the network actively captures subtle chest features."),
+        ("Validation Sweet Spot @ Epoch 6: ", "Validation error drops to its lowest point at 0.5898 at Epoch 6, locking in the ideal checkpoint before training set memorization starts."),
+        ("Peak Validation AUROC: 0.6914: ", "At Epoch 6, the Enhanced model hits 0.6914 AUROC and 71.1% accuracy on the 190 validation patients purely from raw X-rays."),
+        ("Holdout Test Verification: 0.6333: ", "On the completely untouched 190-patient holdout test set, the pure vision CNN delivers solid 0.6333 AUROC with zero data leakage.")
     ]
     for b_title, b_desc in loss_points:
         p = tf.add_paragraph()
