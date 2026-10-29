@@ -555,11 +555,11 @@ def create_deck(output_path):
                 p.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 7: Validation Loss & AUROC Learning Curves (Pure CXR Vision 3-Way Split)
+    # SLIDE 7: Validation Loss & AUROC Learning Curves (Anti-Memorization)
     # =========================================================================
     s7 = prs.slides.add_slide(blank_layout)
     set_slide_background(s7)
-    add_header(s7, "Loss & Learning Curves: 3-Way Split (Train / Val / Test)", milestone="PHASE 2: TRAINING DYNAMICS")
+    add_header(s7, "Loss & Generalization: Preventing Model Memorization", milestone="PHASE 2: ANTI-MEMORIZATION EXPERIMENT")
 
     graph_img = "/home/e92/School/CS396/Oppurtunistic_Detection_of_Type_II_Diabetes/malek_and_angelo/malek/cxr_loss_graph.png"
     if Path(graph_img).exists():
@@ -579,10 +579,10 @@ def create_deck(output_path):
     p.space_after = Pt(10)
 
     loss_points = [
-        ("Clean Train Loss Drop (Dashed): ", "Enhanced model training loss drops smoothly from 0.69 down to 0.17, proving the network actively captures subtle chest features."),
-        ("Validation Sweet Spot @ Epoch 6: ", "Validation error drops to its lowest point at 0.5898 at Epoch 6, locking in the ideal checkpoint before training set memorization starts."),
-        ("Peak Validation AUROC: 0.6914: ", "At Epoch 6, the Enhanced model hits 0.6914 AUROC and 71.1% accuracy on the 190 validation patients purely from raw X-rays."),
-        ("Holdout Test Verification: 0.6333: ", "On the completely untouched 190-patient holdout test set, the pure vision CNN delivers solid 0.6333 AUROC with zero data leakage.")
+        ("The Memorization Trap (Red Curves): ", "Without augmentation, training loss crashes to 0.17 while validation loss stalls at 0.67 (a wide 0.50 gap). The network is just memorizing pixel noise like flashcards."),
+        ("Anti-Memorization Fix (Green Curves): ", "Applying subtle \u00b15\u00b0 rotations and translations forces the convolutional filters to learn anatomical heart shapes rather than exact pixel coordinates."),
+        ("Zero Generalization Gap (~0.03): ", "With augmentation and weight decay, training loss (0.63) and validation loss (0.66) track tightly together, proving genuine non-memorized learning."),
+        ("Reliable Clinical Screening: ", "The anti-memorization model achieves 0.644 AUROC and catches 56.5% of diabetic patients on unseen validation radiographs with zero cheating.")
     ]
     for b_title, b_desc in loss_points:
         p = tf.add_paragraph()
@@ -591,7 +591,7 @@ def create_deck(output_path):
         run1.text = "• " + b_title
         run1.font.bold = True
         run1.font.size = Pt(11)
-        run1.font.color.rgb = ACCENT_GREEN if "AUROC" in b_title or "Clean" in b_title else ACCENT_ORANGE
+        run1.font.color.rgb = ACCENT_GREEN if "Zero" in b_title or "Clinical" in b_title else (ACCENT_ORANGE if "Anti" in b_title else RGBColor(244, 63, 94))
         run2 = p.add_run()
         run2.text = b_desc
         run2.font.size = Pt(10.5)

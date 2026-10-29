@@ -1,0 +1,25 @@
+model,epoch,train_loss,val_loss,val_auroc,val_accuracy,setup,val_acc,val_recall
+Enhanced_Residual_CXRNet,1,0.6907,0.6941,0.575,43.68,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,2,0.6182,0.6008,0.6613,66.84,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,3,0.5961,0.6133,0.6777,64.74,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,4,0.5937,0.6018,0.6909,67.89,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,5,0.5562,0.6168,0.6851,71.05,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,6,0.5204,0.5898,0.6914,68.95,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,7,0.4703,0.6134,0.678,67.37,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,8,0.4065,0.6203,0.6694,67.89,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,9,0.2948,0.6545,0.6817,62.11,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,10,0.2486,0.6436,0.6778,66.84,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,11,0.1928,0.6728,0.6818,69.47,Standard (Memorization Trap),,
+Enhanced_Residual_CXRNet,12,0.1735,0.6722,0.6802,70.0,Standard (Memorization Trap),,
+Anti_Memorization_CXRNet,1,0.7607,0.6906,0.5131,,With Augmentation (Anti-Memorization),67.37,0.0
+Anti_Memorization_CXRNet,2,0.7048,0.6857,0.5474,,With Augmentation (Anti-Memorization),62.11,17.74
+Anti_Memorization_CXRNet,3,0.6941,0.6864,0.6011,,With Augmentation (Anti-Memorization),45.79,74.19
+Anti_Memorization_CXRNet,4,0.6628,0.6731,0.5985,,With Augmentation (Anti-Memorization),62.11,38.71
+Anti_Memorization_CXRNet,5,0.6978,0.6959,0.5954,,With Augmentation (Anti-Memorization),40.53,87.1
+Anti_Memorization_CXRNet,6,0.6704,0.6706,0.6221,,With Augmentation (Anti-Memorization),64.74,38.71
+Anti_Memorization_CXRNet,7,0.6719,0.6728,0.5985,,With Augmentation (Anti-Memorization),66.84,46.77
+Anti_Memorization_CXRNet,8,0.6648,0.6656,0.6357,,With Augmentation (Anti-Memorization),65.26,46.77
+Anti_Memorization_CXRNet,9,0.6411,0.669,0.6285,,With Augmentation (Anti-Memorization),63.68,48.39
+Anti_Memorization_CXRNet,10,0.6413,0.671,0.6295,,With Augmentation (Anti-Memorization),63.16,53.23
+Anti_Memorization_CXRNet,11,0.6297,0.6603,0.6444,,With Augmentation (Anti-Memorization),64.74,56.45
+Anti_Memorization_CXRNet,12,0.635,0.6629,0.6421,,With Augmentation (Anti-Memorization),65.79,53.23
