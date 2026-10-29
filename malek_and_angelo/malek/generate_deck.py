@@ -588,17 +588,134 @@ def create_deck(output_path):
         r2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 8: How to Use Malek's Screeners (Deliverables)
+    # SLIDE 8: Clinical Operating Point: Threshold Optimization (tau = 0.40)
     # =========================================================================
     s8 = prs.slides.add_slide(blank_layout)
     set_slide_background(s8)
-    add_header(s8, "Deployable Python Screeners & OOF Deliverables")
+    add_header(s8, "Clinical Operating Point: Threshold Optimization (\u03c4 = 0.40)")
 
-    s8_left = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(5.2))
-    s8_left.fill.solid()
-    s8_left.fill.fore_color.rgb = CARD_BG
-    s8_left.line.color.rgb = BORDER
-    tf = s8_left.text_frame
+    # 4 Metric Highlights for tau = 0.40
+    opt_cards = [
+        ("RECALL (SENSITIVITY)", "80.78%", "248 / 307 Diabetics Caught\n(Cuts missed cases by 37.2%)", ACCENT_GREEN),
+        ("SPECIFICITY (TNR)", "83.49%", "536 / 642 Normals Cleared\n(Prevents over-testing)", ACCENT_BLUE),
+        ("FALSE POSITIVES", "106", "vs. 260 in Pure CXR\n(2.4\u00d7 fewer false alarms)", ACCENT_ORANGE),
+        ("PEAK F1-SCORE", "0.7504", "Optimal Precision-Recall\nHarmonic Balance", ACCENT_GREEN)
+    ]
+    for i, (m_lbl, m_val, m_sub, m_col) in enumerate(opt_cards):
+        x = Inches(0.8 + i * 2.98)
+        card = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(1.5), Inches(2.78), Inches(1.6))
+        card.fill.solid()
+        card.fill.fore_color.rgb = CARD_BG
+        card.line.color.rgb = BORDER
+        ctf = card.text_frame
+        ctf.word_wrap = True
+        
+        p = ctf.paragraphs[0]
+        p.text = m_lbl
+        p.font.size = Pt(10.5)
+        p.font.bold = True
+        p.font.color.rgb = m_col
+        
+        p2 = ctf.add_paragraph()
+        p2.text = m_val
+        p2.font.size = Pt(26)
+        p2.font.bold = True
+        p2.font.color.rgb = WHITE
+        
+        p3 = ctf.add_paragraph()
+        p3.text = m_sub
+        p3.font.size = Pt(9.5)
+        p3.font.color.rgb = MUTED
+
+    # Table of Threshold Trade-Offs
+    rows, cols = 5, 8
+    t_th = s8.shapes.add_table(rows, cols, Inches(0.8), Inches(3.25), Inches(6.8), Inches(3.8)).table
+    t_th.columns[0].width = Inches(1.0)
+    t_th.columns[1].width = Inches(0.7)
+    t_th.columns[2].width = Inches(0.7)
+    t_th.columns[3].width = Inches(0.7)
+    t_th.columns[4].width = Inches(0.7)
+    t_th.columns[5].width = Inches(1.0)
+    t_th.columns[6].width = Inches(1.0)
+    t_th.columns[7].width = Inches(1.0)
+
+    th_headers = ["Threshold", "TP", "FP", "TN", "FN", "Recall", "Specificity", "Precision"]
+    for j, h in enumerate(th_headers):
+        cell = t_th.cell(0, j)
+        cell.fill.solid()
+        cell.fill.fore_color.rgb = RGBColor(40, 53, 76)
+        p = cell.text_frame.paragraphs[0]
+        p.text = h
+        p.font.size = Pt(10)
+        p.font.bold = True
+        p.font.color.rgb = ACCENT_BLUE
+
+    th_rows = [
+        ("0.50 (Default)", "213", "65", "577", "94", "69.38%", "89.88%", "76.62%"),
+        ("0.40 (Optimal)", "248", "106", "536", "59", "80.78%", "83.49%", "70.06%"),
+        ("0.35 (Aggressive)", "259", "133", "509", "48", "84.36%", "79.28%", "66.07%"),
+        ("0.30 (High Catch)", "273", "159", "483", "34", "88.93%", "75.23%", "63.19%")
+    ]
+    for i, row in enumerate(th_rows, start=1):
+        is_highlight = "0.40" in row[0]
+        for j, val in enumerate(row):
+            cell = t_th.cell(i, j)
+            cell.fill.solid()
+            cell.fill.fore_color.rgb = RGBColor(37, 52, 75) if is_highlight else (CARD_BG if i % 2 == 1 else RGBColor(24, 33, 47))
+            p = cell.text_frame.paragraphs[0]
+            p.text = val
+            p.font.size = Pt(9.5)
+            if is_highlight:
+                p.font.bold = True
+                p.font.color.rgb = ACCENT_GREEN if j in [0, 5] else (ACCENT_ORANGE if j == 2 else WHITE)
+            else:
+                p.font.color.rgb = WHITE
+
+    # Right Card: Clinical Rationale for Threshold Selection
+    r_why = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.8), Inches(3.25), Inches(4.7), Inches(3.8))
+    r_why.fill.solid()
+    r_why.fill.fore_color.rgb = CARD_BG
+    r_why.line.color.rgb = BORDER
+    rtf = r_why.text_frame
+    rtf.word_wrap = True
+    rp = rtf.paragraphs[0]
+    rp.text = "Why \u03c4 = 0.40 is the Clinical Gold Standard"
+    rp.font.size = Pt(14)
+    rp.font.bold = True
+    rp.font.color.rgb = ACCENT_BLUE
+    rp.space_after = Pt(8)
+
+    why_th_points = [
+        ("Asymmetric Error Costs: ", "A False Negative misses an undiagnosed diabetic patient, allowing irreversible microvascular complications to progress. A False Positive only prompts an inexpensive, non-invasive HbA1c blood test."),
+        ("Catching 80.8% of Patients: ", "Shifting \u03c4 from 0.50 to 0.40 flags 35 additional diabetics (TP: 213 -> 248) and reduces missed cases from 94 to 59."),
+        ("Controlling False Alarms: ", "Even at \u03c4 = 0.40, our model produces only 106 False Positives—vastly cleaner than Pure CXR alone (which had 260 FPs at only 62.2% recall)."),
+        ("Deployment Recommendation: ", "Flag patients with P(T2D) >= 0.40 for automated reflex lab orders on chest X-ray discharge summaries.")
+    ]
+    for w_title, w_desc in why_th_points:
+        p = rtf.add_paragraph()
+        p.space_after = Pt(6)
+        r1 = p.add_run()
+        r1.text = "• " + w_title
+        r1.font.bold = True
+        r1.font.size = Pt(10.5)
+        r1.font.color.rgb = ACCENT_GREEN if "80.8%" in w_title else ACCENT_ORANGE
+        r2 = p.add_run()
+        r2.text = w_desc
+        r2.font.size = Pt(10)
+        r2.font.color.rgb = WHITE
+
+    # =========================================================================
+    # SLIDE 9: How to Use Malek's Screeners (Deliverables)
+    # =========================================================================
+    s9 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s9)
+    add_header(s9, "Deployable Python Screeners & OOF Deliverables")
+
+    s9_left = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(5.6), Inches(5.2))
+    s9_left.fill.solid()
+    s9_left.fill.fore_color.rgb = CARD_BG
+    s9_left.line.color.rgb = BORDER
+    tf = s9_left.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.text = "Production Python Screeners"
@@ -626,11 +743,11 @@ def create_deck(output_path):
         run2.font.size = Pt(10.5)
         run2.font.color.rgb = WHITE
 
-    s8_right = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(5.2))
-    s8_right.fill.solid()
-    s8_right.fill.fore_color.rgb = CARD_BG
-    s8_right.line.color.rgb = BORDER
-    tf = s8_right.text_frame
+    s9_right = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), Inches(5.7), Inches(5.2))
+    s9_right.fill.solid()
+    s9_right.fill.fore_color.rgb = CARD_BG
+    s9_right.line.color.rgb = BORDER
+    tf = s9_right.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.text = "Clean Deliverables on GitHub"
@@ -660,17 +777,17 @@ def create_deck(output_path):
         run2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 9: Summary & Presentation Speaker Talking Points
+    # SLIDE 10: Summary & Presentation Speaker Talking Points
     # =========================================================================
-    s9 = prs.slides.add_slide(blank_layout)
-    set_slide_background(s9)
-    add_header(s9, "Key Takeaways & Presentation Summary")
+    s10 = prs.slides.add_slide(blank_layout)
+    set_slide_background(s10)
+    add_header(s10, "Key Takeaways & Presentation Summary")
 
-    s9_card = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(11.7), Inches(5.2))
-    s9_card.fill.solid()
-    s9_card.fill.fore_color.rgb = CARD_BG
-    s9_card.line.color.rgb = BORDER
-    tf = s9_card.text_frame
+    s10_card = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(11.7), Inches(5.2))
+    s10_card.fill.solid()
+    s10_card.fill.fore_color.rgb = CARD_BG
+    s10_card.line.color.rgb = BORDER
+    tf = s10_card.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.text = "Summary for CS 396 Presentation (Thursday Oct 22nd)"
@@ -680,11 +797,11 @@ def create_deck(output_path):
     p.space_after = Pt(12)
 
     conclusions = [
-        ("Feasibility Demonstrated: ", "A lightweight from-scratch CNN (~75k parameters) can opportunistically screen for Type 2 Diabetes directly from frontal chest X-rays, achieving 0.6401 AUROC, 60.38% accuracy, and 62.21% sensitivity."),
-        ("Heart vs. Lung (CTR) Significance: ", "The model extracts macroscopic cardiothoracic ratio (heart width vs lung width) and mediastinal/pericardial fat pads, reflecting systemic diabetic cardiomyopathy and visceral adiposity."),
+        ("Two-Stage Pipeline Success: ", "Converting chest radiographs into a continuous thoracic biomarker (CTR & fat pads) and fusing with clinical covariates achieved an outstanding 0.9068 AUROC (AUPRC: 0.8196)."),
+        ("Optimized Screener (\u03c4 = 0.40): ", "Operating at threshold \u03c4 = 0.40 catches 80.78% of undiagnosed diabetics (Sensitivity) while preserving 83.49% specificity, cutting missed cases by 37.2%."),
         ("Scratch Beat Pretrained RAD-DINO: ", "Specialized supervised convolution outscored general contrastive vision transformers (0.6401 vs 0.5734 AUROC), showing that task-targeted training on medical targets captures critical organ geometry."),
         ("Data Diversity Beats Aggressive Filtering: ", "Excluding 11 hazy radiographs degraded sensitivity by 7.5% and AUROC by 0.022. Preserving natural clinical image variations enhances generalization in patient cohorts."),
-        ("Clinical Impact: ", "Over 62% of diabetic patients can be flagged during unrelated routine chest X-rays (e.g. pre-op, cough, trauma), creating a zero-cost safety net to prompt definitive HbA1c diagnostic testing.")
+        ("Clinical Impact: ", "Over 80% of diabetic patients can be flagged during unrelated routine chest X-rays (e.g. pre-op, cough, trauma), creating a zero-cost safety net to prompt definitive HbA1c diagnostic testing.")
     ]
     for c_title, c_desc in conclusions:
         p = tf.add_paragraph()
@@ -692,11 +809,11 @@ def create_deck(output_path):
         run1 = p.add_run()
         run1.text = "★ " + c_title
         run1.font.bold = True
-        run1.font.size = Pt(12.5)
+        run1.font.size = Pt(12)
         run1.font.color.rgb = ACCENT_GREEN
         run2 = p.add_run()
         run2.text = c_desc
-        run2.font.size = Pt(12)
+        run2.font.size = Pt(11.5)
         run2.font.color.rgb = WHITE
 
     prs.save(output_path)

@@ -220,10 +220,23 @@ def main():
     merged["cxr_score"] = merged["predicted_prob"]
     merged["multimodal_prob"] = multi_gb_oof
     merged["multimodal_pred"] = (multi_gb_oof >= 0.5).astype(int)
+    merged["multimodal_pred_tau40"] = (multi_gb_oof >= 0.4).astype(int)
     
+    # Calculate optimal screener metrics at tau = 0.40
+    opt_metrics = evaluate_binary(y, multi_gb_oof, threshold=0.40)
+    print("\n" + "=" * 98)
+    print("      CLINICAL OPERATING POINT: BALANCED SCREENER AT OPTIMAL THRESHOLD (\u03c4 = 0.40)")
+    print("=" * 98)
+    print(f" ► Recall (Sensitivity): {opt_metrics['sensitivity']*100:.2f}% ({opt_metrics['tp']}/{opt_metrics['tp']+opt_metrics['fn']} diabetics caught)")
+    print(f" ► Specificity:          {opt_metrics['specificity']*100:.2f}% ({opt_metrics['tn']}/{opt_metrics['tn']+opt_metrics['fp']} cleared non-diabetics)")
+    print(f" ► Precision:            {opt_metrics['precision']*100:.2f}%")
+    print(f" ► False Positives (FP): {opt_metrics['fp']} (vs. 260 in Pure CXR)")
+    print(f" ► Missed Cases (FN):    {opt_metrics['fn']} (cuts missed cases from 94 down to {opt_metrics['fn']})")
+    print(f" ► F1-Score:             {opt_metrics['f1']:.4f}")
+
     save_cols = [
         "image_name", "patient_id", "actual_t2d", "fold",
-        "cxr_score", "multimodal_prob", "multimodal_pred"
+        "cxr_score", "multimodal_prob", "multimodal_pred", "multimodal_pred_tau40"
     ]
     oof_multi_path = out_dir / "oof_multimodal.csv"
     merged[save_cols].to_csv(oof_multi_path, index=False)
