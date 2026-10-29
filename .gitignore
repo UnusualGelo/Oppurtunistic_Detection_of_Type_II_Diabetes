@@ -3,6 +3,7 @@
 # ==========================================
 # Radiographs and medical images (PHI)
 *.png
+!malek_and_angelo/malek/cxr_loss_graph.png
 *.jpg
 *.jpeg
 *.dcm

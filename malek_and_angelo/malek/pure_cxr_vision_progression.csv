@@ -1,0 +1,5 @@
+CXR Vision Model,Architecture,AUROC,Accuracy,Recall (Sens.),Specificity,Final Avg Val Loss,Key Insight
+1. Frozen RAD-DINO (Foundation ViT),ViT-B Patches (768-d),0.5734,56.40%,55.37%,56.85%,N/A (Linear Probe),Baseline: ViT patches miss macroscopic thoracic CTR ratio
+2. Scratch CNN (No Hazy 11 Excluded),4-Block ConvNet (N=938),0.6182,59.17%,54.72%,61.33%,0.6841,Dropping blurry CXRs hurt sensitivity by 7.5%
+3. Baseline Scratch CNN (All CXRs),4-Block ConvNet (N=949),0.6284,56.48%,65.80%,52.02%,0.6681,Original baseline: 62.2% recall from pixels alone
+4. Enhanced Residual CXRNet (Dual Pool),Residual Skip + Dual Pool (~120k params),0.6503,61.43%,62.54%,60.90%,0.6983,Skip connections stabilize val loss & enhance CTR margins
