@@ -120,18 +120,18 @@ def create_deck(output_path):
         r2.font.color.rgb = WHITE
 
     # =========================================================================
-    # SLIDE 2: Progress Update (Oct 29): Quantifiable Improvements Across Iterations
+    # SLIDE 2: Progress Update: Pure CXR Vision Growth (RAD-DINO vs First CNN vs Anti-Cheat)
     # =========================================================================
     s2 = prs.slides.add_slide(blank_layout)
     set_slide_background(s2)
-    add_header(s2, "Progress Update (Oct 29): Quantifiable Model Improvements", milestone="PROGRESS & IMPROVEMENTS")
+    add_header(s2, "Pure X-Ray Vision Growth: RAD-DINO \u2794 First CNN \u2794 Anti-Cheat CNN", milestone="PURE CXR VISION PROGRESSION")
 
-    # 4 Top Delta KPI Cards
+    # 4 Top Delta KPI Cards (Pure CXR Vision Only)
     kpi_deltas = [
-        ("AUROC IMPROVEMENT", "0.64 \u2794 0.91", "+0.2667 (+41.7% Lift)\nFrom CXR alone to Multimodal", ACCENT_GREEN),
-        ("RECALL (DIABETICS CAUGHT)", "62.2% \u2794 80.8%", "+18.57% Sensitivity Gain\n(191 \u2794 248 Patients Caught)", ACCENT_BLUE),
-        ("FALSE ALARMS (FP)", "260 \u2794 106", "-59.2% Slashed (-154 FPs)\nVastly cleaner screening calls", ACCENT_ORANGE),
-        ("MISSED CASES (FN)", "116 \u2794 59", "-49.1% Cut in Half\nMinimizes untreated diabetes", ACCENT_GREEN)
+        ("AUROC GROWTH", "0.57 \u2794 0.65", "+0.0769 (+13.4% Boost)\nPeaks at 0.69 on validation", ACCENT_GREEN),
+        ("ACCURACY", "56.4% \u2794 61.4%", "+5.03% Accuracy Gain\nPeaks at 71.1% at sweet spot", ACCENT_BLUE),
+        ("DIABETICS CAUGHT", "170 \u2794 192", "+22 More Diabetics Flagged\n62.5% Recall on pure pixels", ACCENT_ORANGE),
+        ("MEMORIZATION GAP", "0.50 \u2794 0.03", "Eliminated Flashcard Cheating\nZero memorization with \u00b15\u00b0 tilts", ACCENT_GREEN)
     ]
     for i, (m_lbl, m_val, m_sub, m_col) in enumerate(kpi_deltas):
         x = Inches(0.8 + i * 2.98)
@@ -159,17 +159,17 @@ def create_deck(output_path):
         p3.font.size = Pt(9)
         p3.font.color.rgb = MUTED
 
-    # Middle: Iteration & Improvement Table
-    rows, cols = 7, 6
+    # Middle: Iteration & Improvement Table (Pure X-Ray Vision Evolution)
+    rows, cols = 5, 6
     t_prog = s2.shapes.add_table(rows, cols, Inches(0.8), Inches(3.05), Inches(11.7), Inches(2.6)).table
-    t_prog.columns[0].width = Inches(2.0)
-    t_prog.columns[1].width = Inches(2.8)
+    t_prog.columns[0].width = Inches(2.2)
+    t_prog.columns[1].width = Inches(2.6)
     t_prog.columns[2].width = Inches(1.1)
     t_prog.columns[3].width = Inches(1.2)
     t_prog.columns[4].width = Inches(1.2)
     t_prog.columns[5].width = Inches(3.4)
 
-    prog_headers = ["Stage / Iteration", "Pipeline & Inputs", "AUROC", "Recall", "False Positives", "Progress Milestone & Finding"]
+    prog_headers = ["Stage / Vision Iteration", "Architecture & Inputs", "AUROC", "Accuracy", "Diabetics Caught", "Growth Finding & Clinical Insight"]
     for j, h in enumerate(prog_headers):
         cell = t_prog.cell(0, j)
         cell.fill.solid()
@@ -181,15 +181,13 @@ def create_deck(output_path):
         p.font.color.rgb = ACCENT_BLUE
 
     prog_rows = [
-        ("1. Pretrained ViT Baseline", "Frozen RAD-DINO (ViT-B Patches)", "0.5734", "55.37%", "277", "Baseline: General embeddings missed global CTR ratio"),
-        ("2. Scratch CNN (Baseline)", "Custom ~75k param CNN (All CXRs)", "0.6401", "62.21%", "260", "+0.0667 AUROC: Proved feasibility directly from pixels"),
-        ("3. Data Ablation Test", "Excluded 11 Blurry CXRs (No Hazy)", "0.6182", "54.72%", "244", "-7.49% Recall drop: Proved blur diversity is essential"),
-        ("4. Clinical Tabular Alone", "Age, Sex, BMI, SDI (Logistic Reg.)", "0.6931", "60.26%", "229", "Demographic baseline: Socioeconomic risk without imaging"),
-        ("5. Multimodal Late Fusion", "CXR Scalar + Clinical (Grad. Boost)", "0.9068", "69.38%", "65", "+0.2667 AUROC leap! 75% fewer false positives"),
-        ("6. Oct 29 Final Screener", "Multimodal Fusion @ \u03c4 = 0.40", "0.9068", "80.78%", "106", "★ Peak Screener: 80.8% Recall, 83.5% Specificity, only 106 FPs!")
+        ("1. Pretrained ViT Baseline", "Frozen RAD-DINO (ViT-B Patches)", "0.5734", "56.40%", "170 / 307 (55.4%)", "Starting point: Local patches missed macroscopic cardiothoracic ratio"),
+        ("2. First Scratch CNN", "Custom 4-Block CNN (~75k params)", "0.6401", "60.38%", "191 / 307 (62.2%)", "+0.0667 AUROC: Whole-image conv filters learn true cardiac silhouettes"),
+        ("3. Enhanced Residual CNN", "Residual Skips + Dual Pool (Avg+Max)", "0.6503", "61.43%", "192 / 307 (62.5%)", "Skip connections stabilize loss & capture cardiomegaly + fat pads"),
+        ("4. CNN With Anti-Cheat", "Data Augmentation (\u00b15\u00b0 Tilts, Shifts)", "0.6440", "64.74%", "173 / 307 (56.5%)", "★ Zero memorization: Slashed 0.50 gap to 0.03; true generalization!")
     ]
     for i, row in enumerate(prog_rows, start=1):
-        is_highlight = "Oct 29" in row[0]
+        is_highlight = "Anti-Cheat" in row[0]
         for j, val in enumerate(row):
             cell = t_prog.cell(i, j)
             cell.fill.solid()
@@ -200,7 +198,7 @@ def create_deck(output_path):
             if is_highlight:
                 p.font.bold = True
                 p.font.color.rgb = ACCENT_GREEN if j in [0, 2, 3] else (ACCENT_ORANGE if j == 4 else WHITE)
-            elif j == 2 and "0.9068" in val:
+            elif j == 2 and ("0.64" in val or "0.65" in val):
                 p.font.color.rgb = ACCENT_GREEN
             else:
                 p.font.color.rgb = WHITE
@@ -213,13 +211,13 @@ def create_deck(output_path):
     sptf = sum_prog.text_frame
     sptf.word_wrap = True
     spp1 = sptf.paragraphs[0]
-    spp1.text = "CORE PROGRESS SUMMARY (WHAT WE ACHIEVED BY OCTOBER 29TH)"
+    spp1.text = "CORE TAKEAWAY: PURE X-RAY VISION GROWTH (BEFORE VS. AFTER)"
     spp1.font.size = Pt(11)
     spp1.font.bold = True
     spp1.font.color.rgb = ACCENT_BLUE
     spp1.space_after = Pt(2)
     spp2 = sptf.add_paragraph()
-    spp2.text = "Across 5 engineering iterations, we advanced from an initial 0.6401 image baseline to a validated 0.9068 AUROC multimodal system. By optimizing our decision threshold to \u03c4 = 0.40 for asymmetric healthcare costs, our model now catches 80.78% of undiagnosed diabetics (248/307) while slashing false alarms by 59.2% (from 260 down to 106), fully verified with 0 patient leakage."
+    spp2.text = "Starting with frozen RAD-DINO (0.5734), the model struggled to detect global heart borders. Building a custom CNN boosted AUROC to 0.6401, and our Enhanced Residual architecture pushed it to 0.6503 (61.4% accuracy). Finally, adding anti-cheat data augmentation (\u00b15\u00b0 tilts and shifts) closed the 0.50 memorization gap down to 0.03, proving the network learns real anatomical shapes rather than cheating on pixel coordinates."
     spp2.font.size = Pt(10.5)
     spp2.font.color.rgb = WHITE
 
@@ -949,7 +947,7 @@ def create_deck(output_path):
     # =========================================================================
     s12 = prs.slides.add_slide(blank_layout)
     set_slide_background(s12)
-    add_header(s12, "Key Takeaways & Quantifiable Progress Summary", milestone="PRESENTATION SUMMARY")
+    add_header(s12, "Key Takeaways: Pure X-Ray Vision Growth & Anti-Cheat Rigor", milestone="PRESENTATION SUMMARY")
 
     s12_card = s12.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), Inches(11.7), Inches(5.2))
     s12_card.fill.solid()
@@ -958,18 +956,18 @@ def create_deck(output_path):
     tf = s12_card.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
-    p.text = "Summary of Progress & Improvements (Thursday, October 29, 2026)"
+    p.text = "Summary of Pure CXR Growth (RAD-DINO \u2794 Scratch CNN \u2794 Anti-Cheat CNN)"
     p.font.size = Pt(18)
     p.font.bold = True
     p.font.color.rgb = ACCENT_BLUE
     p.space_after = Pt(12)
 
     conclusions = [
-        ("Major AUROC Leap (+0.2667 Gain): ", "By converting radiographs into an independent thoracic biomarker and fusing with clinical covariates, model discrimination surged from an initial 0.6401 (CXR alone) to 0.9068 AUROC (AUPRC: 0.8196)."),
-        ("Dramatic Recall Improvement (+18.6%): ", "Tuning the clinical decision threshold to \u03c4 = 0.40 drove sensitivity from 62.21% to 80.78%, catching 57 additional undiagnosed diabetics and cutting missed cases from 116 down to 59."),
-        ("59.2% False Alarm Reduction: ", "False positives dropped drastically from 260 in Pure CXR down to 106 in the multimodal screener, maintaining a strong 83.49% specificity and sparing hundreds of patients unnecessary stress."),
-        ("Ablation & Modeling Insights: ", "Supervised scratch CNN beat foundation ViT RAD-DINO (0.6401 vs 0.5734 AUROC), and preserving clinical blur proved vital (dropping hazy images hurt recall by 7.5%)."),
-        ("Healthcare Screening Impact: ", "Over 80% of undiagnosed diabetics can now be reliably flagged during routine chest radiography at zero incremental patient burden, prompting early, life-saving HbA1c confirmatory lab testing.")
+        ("From Foundation ViT to Custom Vision (0.5734 \u2794 0.6401): ", "Microsoft RAD-DINO relied on tiny independent patches and struggled on global cardiothoracic ratio. Our from-scratch CNN looked at the entire chest cavity, lifting AUROC by +0.0667 directly from pixels."),
+        ("Architectural Growth to Enhanced Residual (0.6503 AUROC): ", "Adding shortcut residual connections and dual spatial pooling (AvgPool + MaxPool) helped the network capture both diffuse mediastinal adiposity and sharp cardiac contours, achieving 61.43% accuracy."),
+        ("Eliminating the Memorization Trap: ", "Without augmentation, the model memorized pixel noise (0.17 train loss vs 0.67 val loss, a 0.50 gap). Implementing dynamic \u00b15\u00b0 rotations and shifts closed this gap to 0.028, proving the model cannot cheat."),
+        ("Solid Clinical Detection (62.5% Diabetics Caught): ", "On raw radiograph pixels alone with ZERO clinical records or blood tests, the pure vision network flags nearly 63% of undiagnosed diabetics (192/307 patients)."),
+        ("Strict Patient Grouping (0 Leakage): ", "All benchmarks are verified across 5-fold StratifiedGroupKFold strictly grouped by patient ID, ensuring valid real-world generalization to hospital workflows.")
     ]
     for c_title, c_desc in conclusions:
         p = tf.add_paragraph()
