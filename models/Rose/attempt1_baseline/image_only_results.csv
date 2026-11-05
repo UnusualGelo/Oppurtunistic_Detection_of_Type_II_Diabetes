@@ -1,0 +1,5 @@
+run,model,file,n_train,n_test,test_T2D,cv_auc,test_auc,accuracy,recall,precision,f1
+Run 1: all 949,CLS token,model_run1_embedding_cls.joblib,759,190,62,0.649,0.604,0.642,0.516,0.457,0.485
+Run 1: all 949,Patch-token average,model_run1_embedding_patchmean.joblib,759,190,62,0.667,0.631,0.611,0.532,0.423,0.471
+Run 2: lowest 50 excluded,CLS token,model_run2_embedding_cls.joblib,716,183,60,0.623,0.6,0.607,0.45,0.409,0.429
+Run 2: lowest 50 excluded,Patch-token average,model_run2_embedding_patchmean.joblib,716,183,60,0.656,0.632,0.628,0.55,0.446,0.493

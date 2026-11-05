@@ -1,0 +1,11 @@
+numpy
+pandas
+scipy
+scikit-learn==1.6.1
+joblib
+# only for extraction / fine-tuning / curves:
+torch
+transformers
+pillow
+matplotlib
+open_clip_torch
