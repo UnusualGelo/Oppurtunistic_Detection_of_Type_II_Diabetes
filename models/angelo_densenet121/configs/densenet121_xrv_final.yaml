@@ -1,0 +1,45 @@
+# FINAL MODEL: DenseNet-121 pretrained on chest X-rays (TorchXRayVision densenet121-res224-all),
+# fine-tuned for T2D with the lower learning rate (3e-4).
+name: densenet121_xrv_final
+results_dir: results/experiments
+
+data:
+  splits_csv: splits/splits.csv
+  image_dir: "Image Folder"        # overridden by the notebook's IMAGE_DIR setting
+  image_size: 224
+  clahe: false
+  cache_dir: results/cache
+
+augment:                           # training images only
+  enabled: true
+  degrees: 7
+  translate: 0.06
+  scale: 0.08
+  brightness: 0.15
+  contrast: 0.15
+
+model:
+  name: densenet121_xrv
+  weights: densenet121-res224-all
+  dropout: 0.3
+
+train:
+  epochs: 40
+  warmup_epochs: 3
+  batch_size: 16
+  lr: 0.0003                       # head learning rate (final choice)
+  backbone_lr_mult: 0.1            # pretrained layers learn at 3e-5
+  weight_decay: 0.0001
+  pos_weight: auto                 # negatives / positives in each fold's training data
+  label_smoothing: 0.0
+  grad_clip: 1.0
+  num_workers: 0                   # Colab: --set train.num_workers=2
+  seeds: [0, 1, 2]
+  early_stopping:
+    inner_val_frac: 0.15
+    monitor: val_loss
+    patience: 10
+
+evaluation:
+  threshold_method: youden
+  target_sensitivity: 0.80

@@ -1,0 +1,7 @@
+results/
+.venv/
+__pycache__/
+*.pt
+*.npz
+*.csv
+!splits/splits.csv
