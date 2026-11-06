@@ -18,7 +18,7 @@ For comparison, a CNN trained from scratch scored 0.584 ROC-AUC in cross-validat
 ## Folder layout
 
 ```
-angelo_densenet121/
+main_model/
 ├── densenet_t2d/                     # the code
 │   ├── splits.py                     # patient-grouped, stratified test split + 5 CV folds
 │   ├── data.py                       # loading, aspect-preserving resize/pad, train-only augmentation
@@ -50,7 +50,7 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-All commands below are run from `models/angelo_densenet121/`.
+All commands below are run from `main_model/`.
 
 1. Put `splits/splits.csv` in place. It isn't regenerated, so everyone uses the same test patients.
 2. Set `data.image_dir` in the config, or pass `--set data.image_dir=/path/to/images`.
