@@ -35,7 +35,7 @@ from .data import CXRDataset, build_cache, load_split_table, make_train_transfor
 from .metrics import choose_threshold, full_report
 from .models import build_model, count_params
 
-ROOT = Path(__file__).resolve().parents[1]  # models/angelo_densenet121
+ROOT = Path(__file__).resolve().parents[1]  # main_model
 
 
 # ----------------------------------------------------------------------------- config
