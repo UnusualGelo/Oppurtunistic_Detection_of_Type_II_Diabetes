@@ -37,16 +37,18 @@ def main():
     parser = argparse.ArgumentParser(description="Train Multimodal Fusion model (CXR + Clinical) for T2D detection.")
     parser.add_argument("--splits-csv", default=str(ROOT / "splits/splits.csv"), help="Path to splits.csv")
     parser.add_argument("--clinical-csv", default="/home/e92/School/CS396/Clinical_data_with_SDI.csv", help="Path to clinical table")
-    parser.add_argument("--cxr-oof-csv", default="/home/e92/School/CS396/Oppurtunistic_Detection_of_Type_II_Diabetes/archive/malek_and_angelo/malek/oof_all_cxrs.csv", help="Path to CXR OOF predictions")
+    parser.add_argument("--cxr-oof-csv", default=str(ROOT / "predictions/densenet121_final/oof.csv"), help="Path to CXR OOF predictions")
     args = parser.parse_args()
 
     splits = pd.read_csv(args.splits_csv)
     clinical = pd.read_csv(args.clinical_csv)
     oof = pd.read_csv(args.cxr_oof_csv)
 
+    # Use 'prob' if available (DenseNet predictions format) else fallback to 'predicted_prob'
+    prob_col = "prob" if "prob" in oof.columns else "predicted_prob"
     df = pd.merge(splits, clinical, on="image_name", how="inner")
-    df = pd.merge(df, oof[["image_name", "predicted_prob"]], on="image_name", how="inner")
-    df["cxr_score"] = df["predicted_prob"]
+    df = pd.merge(df, oof[["image_name", prob_col]], on="image_name", how="inner")
+    df["cxr_score"] = df[prob_col]
 
     dev_df = df[df["split"] == "dev"].copy().reset_index(drop=True)
     y = dev_df["label"].values

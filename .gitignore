@@ -4,6 +4,7 @@
 # Radiographs and medical images (PHI)
 *.png
 !archive/malek_and_angelo/malek/cxr_loss_graph.png
+!main_model/multimodal_progression_graph.png
 *.jpg
 *.jpeg
 *.dcm
