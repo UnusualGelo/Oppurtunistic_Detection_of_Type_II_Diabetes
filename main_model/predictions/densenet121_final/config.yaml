@@ -1,0 +1,41 @@
+results_dir: results/experiments
+data:
+  splits_csv: splits/splits.csv
+  image_dir: /content/drive/MyDrive/T2D_CXR/Image Folder
+  image_size: 224
+  clahe: false
+  cache_dir: results/cache
+augment:
+  enabled: true
+  degrees: 7
+  translate: 0.06
+  scale: 0.08
+  brightness: 0.15
+  contrast: 0.15
+train:
+  epochs: 40
+  warmup_epochs: 3
+  batch_size: 16
+  lr: 0.0003
+  backbone_lr_mult: 0.1
+  weight_decay: 0.0001
+  pos_weight: auto
+  label_smoothing: 0.0
+  grad_clip: 1.0
+  num_workers: 2
+  seeds:
+  - 0
+  - 1
+  - 2
+  early_stopping:
+    inner_val_frac: 0.15
+    monitor: val_loss
+    patience: 10
+evaluation:
+  threshold_method: youden
+  target_sensitivity: 0.8
+name: 05_densenet_lr3e-4_final
+model:
+  name: densenet121_xrv
+  weights: densenet121-res224-all
+  dropout: 0.3

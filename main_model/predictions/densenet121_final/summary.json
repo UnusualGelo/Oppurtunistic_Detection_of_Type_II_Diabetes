@@ -1,0 +1,227 @@
+{
+  "experiment": "05_densenet_lr3e-4_final",
+  "data_used": "dev split only (out-of-fold)",
+  "params": 6948609,
+  "oof": {
+    "roc_auc": 0.6239412761151891,
+    "average_precision": 0.4452148787334125,
+    "brier": 0.2358018248272199,
+    "n": 758,
+    "n_pos": 252,
+    "roc_auc_ci95": [
+      0.578639265324048,
+      0.6639284930045798
+    ],
+    "average_precision_ci95": [
+      0.3997122776805063,
+      0.4986609145040305
+    ],
+    "prevalence": 0.3324538258575198,
+    "at_threshold": {
+      "fixed_0.50": {
+        "threshold": 0.5,
+        "accuracy": 0.5963060686015831,
+        "sensitivity": 0.5873015873015873,
+        "specificity": 0.6007905138339921,
+        "precision": 0.4228571428571429,
+        "f1": 0.49169435215946844,
+        "balanced_accuracy": 0.5940460505677897,
+        "confusion_matrix": [
+          [
+            304,
+            202
+          ],
+          [
+            104,
+            148
+          ]
+        ]
+      },
+      "dev_selected": {
+        "threshold": 0.4875241219997406,
+        "accuracy": 0.5897097625329816,
+        "sensitivity": 0.6865079365079365,
+        "specificity": 0.541501976284585,
+        "precision": 0.4271604938271605,
+        "f1": 0.5266362252663622,
+        "balanced_accuracy": 0.6140049563962607,
+        "confusion_matrix": [
+          [
+            274,
+            232
+          ],
+          [
+            79,
+            173
+          ]
+        ]
+      }
+    }
+  },
+  "per_fold_auc": {
+    "0": 0.6546598056032018,
+    "1": 0.5940594059405941,
+    "2": 0.6280687397708675,
+    "3": 0.7105416423995341,
+    "4": 0.6125024267132595
+  },
+  "per_fold_auc_mean": 0.6399664040854913,
+  "per_fold_auc_sd": 0.0452770285552346,
+  "best_epochs": [
+    10,
+    1,
+    28,
+    36,
+    35,
+    15,
+    13,
+    1,
+    27,
+    11,
+    14,
+    1,
+    38,
+    39,
+    38
+  ],
+  "runs": [
+    {
+      "fold": 0,
+      "seed": 0,
+      "best_epoch": 10,
+      "outer_auc": 0.6716218791690489,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 0,
+      "seed": 1,
+      "best_epoch": 1,
+      "outer_auc": 0.559367257480465,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 0,
+      "seed": 2,
+      "best_epoch": 28,
+      "outer_auc": 0.6439870402134553,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 1,
+      "seed": 0,
+      "best_epoch": 36,
+      "outer_auc": 0.5883168316831683,
+      "n_train": 520,
+      "n_inner_val": 87,
+      "n_outer": 151
+    },
+    {
+      "fold": 1,
+      "seed": 1,
+      "best_epoch": 35,
+      "outer_auc": 0.5906930693069308,
+      "n_train": 520,
+      "n_inner_val": 87,
+      "n_outer": 151
+    },
+    {
+      "fold": 1,
+      "seed": 2,
+      "best_epoch": 15,
+      "outer_auc": 0.5875247524752476,
+      "n_train": 520,
+      "n_inner_val": 87,
+      "n_outer": 151
+    },
+    {
+      "fold": 2,
+      "seed": 0,
+      "best_epoch": 13,
+      "outer_auc": 0.6372749590834696,
+      "n_train": 520,
+      "n_inner_val": 87,
+      "n_outer": 151
+    },
+    {
+      "fold": 2,
+      "seed": 1,
+      "best_epoch": 1,
+      "outer_auc": 0.5143207855973813,
+      "n_train": 520,
+      "n_inner_val": 87,
+      "n_outer": 151
+    },
+    {
+      "fold": 2,
+      "seed": 2,
+      "best_epoch": 27,
+      "outer_auc": 0.6260229132569558,
+      "n_train": 520,
+      "n_inner_val": 87,
+      "n_outer": 151
+    },
+    {
+      "fold": 3,
+      "seed": 0,
+      "best_epoch": 11,
+      "outer_auc": 0.7363618714812659,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 3,
+      "seed": 1,
+      "best_epoch": 14,
+      "outer_auc": 0.6812269462240342,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 3,
+      "seed": 2,
+      "best_epoch": 1,
+      "outer_auc": 0.6183265385362066,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 4,
+      "seed": 0,
+      "best_epoch": 38,
+      "outer_auc": 0.6191030867792663,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 4,
+      "seed": 1,
+      "best_epoch": 39,
+      "outer_auc": 0.6105610561056105,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    },
+    {
+      "fold": 4,
+      "seed": 2,
+      "best_epoch": 38,
+      "outer_auc": 0.6103669190448457,
+      "n_train": 519,
+      "n_inner_val": 87,
+      "n_outer": 152
+    }
+  ],
+  "selected_threshold": 0.4875241219997406,
+  "note": "dev_selected threshold metrics are optimistic (threshold chosen on these same OOF predictions). Its frozen value is what final_test.py applies to the test set.",
+  "minutes": 48.0
+}
