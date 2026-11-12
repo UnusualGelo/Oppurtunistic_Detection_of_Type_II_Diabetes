@@ -98,7 +98,32 @@ All evaluations are conducted across the official patient-stratified 5-fold cros
 
 ---
 
-## 5. Summary & Reproducibility
+## 5. "Jenga" Feature Ablation & Importance Analysis
+
+To systematically test the structural importance of each data feature, we conducted a **"Jenga" ablation experiment**: starting with all available features, we remove one block of data at a time to determine whether the model stands or collapses.
+
+| Data Block Pulled ("Jenga Block") | Level of Importance | Resulting AUROC | AUROC Drop ($\Delta$) | Resulting Recall | Recall Drop ($\Delta$) | Resulting F1 | Clinical Role |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **All Features Baseline** | — | **0.8995** | Baseline | **66.67%** | Baseline | **0.7119** | Full multi-feature baseline |
+| **Remove Age** | 🔴 **Foundation Tier** | 0.7734 | **-0.1262** 🔻 | 48.41% | **-18.25%** 🔻 | 0.5471 | **Critical Cornerstone:** Without age, recall collapses below 50%. |
+| **Remove BMI** | 🔴 **Foundation Tier** | 0.8477 | **-0.0519** 🔻 | 48.41% | **-18.25%** 🔻 | 0.5782 | **Core Pillar:** Body mass index carries direct physiological risk. |
+| **Remove Sex** | 🟠 **Support Tier** | 0.8855 | **-0.0140** 🔻 | 64.68% | **-1.98%** 🔻 | 0.6951 | Demographic baseline covariate. |
+| **Remove CXR Vision (DenseNet)**| 🔵 **Booster Tier** | 0.8891 | **-0.0105** 🔻 | 65.48% | **-1.19%** 🔻 | 0.6918 | **Imaging Biomarker:** Provides true radiographic physical signal. |
+| **Remove Race & Ethnicity** | ⚪ **Neutral Tier** | 0.8968 | -0.0027 | 68.65% | +1.98% | 0.7208 | Minimal predictive weight on disease status. |
+| **Remove Marital Status** | ⚪ **Neutral Tier** | 0.8973 | -0.0023 | 68.65% | +1.98% | 0.7269 | Minor stabilizing demographic feature. |
+| **Remove SDI Composite Index** | ⚪ **Neutral Tier** | 0.8975 | -0.0020 | 66.27% | -0.40% | 0.7076 | Socioeconomic context at census level. |
+| **Remove 7 SDI Census Sub-Scores**| 🟢 **Noise / Detractor** | **0.9045** | **+0.0050** 🔺 | **70.24%** | **+3.57%** 🔺 | **0.7344** | **Noise Pruning:** 7 collinear census percentages drag down the model; removing them improves AUC and recall! |
+
+---
+
+### "Jenga" Feature Importance Graph
+![Jenga Feature Importance](jenga_feature_importance.png)
+
+*Figure 2: (Left) AUROC drop when each feature is pulled from the model. (Right) Loss of Recall / Sensitivity (percentage of diabetic cases missed) when each feature is removed.*
+
+---
+
+## 6. Summary & Reproducibility
 
 Run directly from `main_model/`:
 

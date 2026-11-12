@@ -5,6 +5,7 @@
 *.png
 !archive/malek_and_angelo/malek/cxr_loss_graph.png
 !main_model/multimodal_progression_graph.png
+!main_model/jenga_feature_importance.png
 *.jpg
 *.jpeg
 *.dcm
