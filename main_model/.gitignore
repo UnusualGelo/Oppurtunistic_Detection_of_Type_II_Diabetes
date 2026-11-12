@@ -5,3 +5,6 @@ __pycache__/
 *.npz
 *.csv
 !splits/splits.csv
+
+!predictions/
+!predictions/**/*.csv
